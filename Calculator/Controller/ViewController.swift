@@ -66,7 +66,7 @@ class ViewController: UIViewController {
                 }
                 doneTypingNumber = false
             }else{
-                if floor(displayValue) != displayValue{
+                if floor(displayValue) != displayValue && num == "."{
                     return
                 } else  {
             displayLabel.text?.append(contentsOf: num)
