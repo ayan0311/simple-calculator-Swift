@@ -21,10 +21,14 @@ struct Logic {
         if let n = number, let operation = symbol{
         switch operation {
         case "AC":
+            intermediateCalc?.num1 = nil
+            intermediateCalc?.calcMethod = nil
             return 0
         case "+/-":
+            intermediateCalc?.calcMethod = nil
             return n * -1
         case "%":
+            intermediateCalc?.calcMethod = nil
             return n * 0.01
         case "=":
             let result = performCalculation(n2: n)

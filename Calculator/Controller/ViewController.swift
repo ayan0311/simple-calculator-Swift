@@ -10,8 +10,10 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
+    private var calcButtonTapped = UIButton()
     private var doneTypingNumber = true
     private var check = true
+    private var decimalTapped = false
     private var calcMethod : String?
     private var displayValue : Double {
         get {
@@ -20,17 +22,35 @@ class ViewController: UIViewController {
             }
             return value
         }set {
-            print(newValue)
-            if floor(newValue) == newValue {
-            displayLabel.text = String(format: "%.0f", newValue)
-            } else{
-                displayLabel.text = String(newValue)
+            if newValue == 0 {
+                displayLabel.text = String(format: "%.0f", newValue)
+            }else {
+            displayLabel.text = refactorStringWithCommas(newValue)
             }
         }
     }
     
     private var calculator = Logic()
     @IBAction func calcButtonPressed(_ sender: UIButton) {
+        doneTypingNumber = true
+        decimalTapped = false
+        calcMethod = sender.currentTitle
+        
+        //button tap modification begins
+        calcButtonTapped.backgroundColor = .systemOrange
+        if calcMethod == "AC" || calcMethod == "+/-" || calcMethod == "%" || calcMethod == "=" {
+            sender.alpha = 0.75
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                sender.alpha = 1.0
+            }
+        } else {
+            calcButtonTapped = sender
+            sender.backgroundColor = .red
+        }
+        
+        
+        //button modification ends
+        
         doneTypingNumber = true
         calcMethod = sender.currentTitle
         if calcMethod == "AC" || calcMethod == "+/-" || calcMethod == "%" || calcMethod == "=" {
@@ -56,24 +76,42 @@ class ViewController: UIViewController {
 
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
+        //button tap modification
+        sender.alpha = 0.75
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            sender.alpha = 1.0
+        }
+        //button modification ends
+        
         check = true
         if let num = sender.currentTitle {
             if doneTypingNumber {
                 if num == "." {
-                    displayLabel.text = "0"+num
+                    decimalTapped = true
+                    displayLabel.text = "0" + num
                 }else {
                     displayLabel.text = num
                 }
                 doneTypingNumber = false
             }else{
-                if floor(displayValue) != displayValue && num == "."{
+                if decimalTapped && num == "."{
                     return
                 } else  {
-            displayLabel.text?.append(contentsOf: num)
+                    if num == "."{
+                        decimalTapped = true
+                    }
+                    displayLabel.text?.append(contentsOf: num)
                 }
             }
         }
     }
-
+    
+    func refactorStringWithCommas(_ n : Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        let formattedNumber = numberFormatter.string(from: n as NSNumber)
+        return formattedNumber!
+    }
+    
 }
 
