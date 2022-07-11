@@ -22,10 +22,10 @@ class ViewController: UIViewController {
             }
             return value
         }set {
-            if newValue == 0 {
+            if floor(newValue) == newValue {
                 displayLabel.text = String(format: "%.0f", newValue)
             }else {
-            displayLabel.text = refactorStringWithCommas(newValue)
+            displayLabel.text = String(newValue)
             }
         }
     }
